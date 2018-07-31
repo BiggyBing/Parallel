@@ -1,10 +1,13 @@
 from parallel_base import Parallel_base
+import numpy as np
+import time
 
 class SVM(Parallel_base):
     
     optimizer_check_list = ['BGD','SGD','ASGD']
     
     def __init__(self, optimizer = 'SGD', learning_rate = 0.0001, train_type = 'Parallel', iteration = 1000):
+        
         optimizer_check_list = ['BGD','SGD','ASGD']
         super().__init__(learning_rate = learning_rate, train_type = train_type, iteration = iteration)
         if optimizer not in optimizer_check_list:
@@ -18,7 +21,8 @@ class SVM(Parallel_base):
         for i in range(X.shape[0]):
             if y[i]*np.dot(self.w,X[i]) < 0:
                 error +=1
-        return error/X.shape[0]
+        correct = X.shape[0] - error
+        return correct/X.shape[0]
         
     def compute_loss(self, X, y, eta = 1):
         '''
@@ -44,21 +48,27 @@ class SVM(Parallel_base):
     def SGD(self, X, y, C = 1):
  
         for i, x in enumerate(X):
+            
             if (y[i]*np.dot(X[i], self.w)) < 1:
-                self.w = self.w - self.learning_rate * (self.w + C * y[i] * X[i])
+                
+                self.w = self.w + C * ( (X[i] * y[i]) + (-2 * self.learning_rate * self.w) )
+                
             else:
-                self.w =self.w - self.learning_rate * self.w 
+                
+                self.w = self.w + C * (-2 * self.learning_rate * self.w)
+
                     
     def BGD(self, X, y, C = 1):
         
         grad = 0
         for i, x in enumerate(X):
             if (y[i]*np.dot(X[i], self.w)) < 1:
-                grad += self.w - C * y[i] * X[i]
+                grad += ((2 * self.learning_rate * self.w) - (X[i] * y[i]))
             else:
-                grad += self.w
-        self.w = self.w - self.learning_rate * grad
-            
+                grad += (2 * self.learning_rate * self.w)
+        self.w = self.w - C * grad
+        
+
     def compute_gradients(self, X, y):
         grad = 0
         for i, x in enumerate(X):

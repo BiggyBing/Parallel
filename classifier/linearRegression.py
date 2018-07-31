@@ -42,21 +42,18 @@ class LinearRegression(Parallel_base):
             count = 0
             tic = time.time()
             for i in range(self.torque): 
-                
-                loss = self.compute_loss(X, y)
-                self.history.append([loss,str(self.t)])#record loss history from t=1, t=0(w intialization) not included
-                
-                self.t += 1
-                grad = np.dot((np.dot(X,self.w)-y), X) + 0.1*self.w
-                self.w = self.w - self.learning_rate * grad
                 count += 1
+                loss = self.compute_loss(X, y)
+                self.history.append([loss,str(self.t)])#record loss history from t=1, t=0(w intialization) not included             
+                self.t += 1
+                grad = np.dot((np.dot(X,self.w)-y), X) + 0.1 * self.w
+                self.w = self.w - self.learning_rate * grad
                 if count < self.torque:
                     self.w_hat = self.w
                 elif count == self.torque:
                     '''
-                    #self.grad saved for belta computation. 
-                    #It denotes in time t(update time), the gradient of local loss of local parameters
-                    
+                    self.grad saved for belta computation. 
+                    It denotes that in time t(update time), the gradient of local loss of local parameters
                     '''
                     self.grad = grad  
         else:
