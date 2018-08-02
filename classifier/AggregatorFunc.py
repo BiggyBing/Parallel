@@ -41,7 +41,7 @@ def wc_from_eng(engine, object_name):
     c = []
     for i in range(len(engine.ids)):
         w.append(engine[i][object_name + '.get_coef()'])
-        c.append(engine[i][object_name + 'km.Est_Resource()']) 
+        c.append(engine[i][object_name + '.Est_Resource()']) 
     w = np.array(w)
     c = np.array(c)
         
@@ -67,22 +67,26 @@ def global_update(w_local,data_size):
 
 
 
-def bg_from_eng(engine):
+def bg_from_eng(engine, object_name):
     '''
     Algorithm 2 - line 14
     Retrieve belta and grad from aggregator 
     Var:
-        engine: belta and gradient of classifer object from Engines
+        engine: belta and gradient of classifer object from Engines.
+        object_name: name of classifier object variable, used for retrieve object information.
     Output:
         Gradient and belta as vector.
         Gradient shape = (# of engines, # of parameters)
         belta shape = (# of engines,)
     '''
+    if not isinstance(object_name,str):
+        raise ValueError('Value of object_name must be string, {} is given!'.format(object_name))
+        
     belta = []
     grad = []
     for i in range(len(engine.ids)):
-        belta.append(engine[i]['km.belta'])
-        grad.append(engine[i]['km.grad_t0']) 
+        belta.append(engine[i][object_name + '.belta'])
+        grad.append(engine[i][object_name + '.grad_t0']) 
     grad = np.array(grad)
     belta = np.array(belta)
     

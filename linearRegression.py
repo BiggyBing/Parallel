@@ -1,10 +1,8 @@
 from parallel_base import Parallel_base
-import numpy as np
-import time
 
 class LinearRegression(Parallel_base):
     
-    def compute_loss(self,X, y):
+    def compute_loss(self, X, y):
         '''
         Computing loss according to OLS
         
@@ -16,8 +14,8 @@ class LinearRegression(Parallel_base):
 
         '''
         
-        m = len(y)
-        sum_of_square_errors = np.square(np.dot(X, self.w)-y).sum()
+        m = len(target)
+        sum_of_square_errors = np.square(np.dot(feature, self.w)-target).sum()
         cost = sum_of_square_errors/(2*m)
     
         return cost

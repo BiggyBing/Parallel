@@ -1,5 +1,7 @@
-from parallel_base import Parallel_base
+import time
+import numpy as np
 from scipy import stats
+from parallel_base import Parallel_base
 from sklearn.metrics.pairwise import euclidean_distances
 
 class Kmeans(Parallel_base):
@@ -40,6 +42,14 @@ class Kmeans(Parallel_base):
         
         return w_init
     
+    def Est_Belta(self ,X):
+        #estimate clusters given global parameters
+        distance_matrix = euclidean_distances(X, self.w_hat)
+        cluster_id = self.partition(distance_matrix)
+        grad_global_parameter = self.grad_kmeans(self.w_hat, X, cluster_id)
+        self.grad_t0 = grad_global_parameter
+        self.belta = np.linalg.norm(self.grad - grad_global_parameter)/np.linalg.norm(self.w - self.w_hat)
+    
     def compute_loss(self, X, y):
         '''
         Computing loss according to OLS
@@ -52,8 +62,8 @@ class Kmeans(Parallel_base):
 
         '''
         
-        m = len(target)
-        sum_of_square_errors = np.square(np.dot(feature, self.w)-target).sum()
+        m = len(y)
+        sum_of_square_errors = np.square(np.dot(X, self.w)-y).sum()
         cost = sum_of_square_errors/(2*m)
     
         return cost
