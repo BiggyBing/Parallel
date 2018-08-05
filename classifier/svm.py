@@ -68,8 +68,11 @@ class SVM(Parallel_base):
                 grad += (2 * self.learning_rate * self.w)
         self.w = self.w - C * grad
         
-
+    
     def compute_gradients(self, X, y):
+        '''
+        Compute gradients give a parameter list.
+        '''
         grad = 0
         for i, x in enumerate(X):
             if (y[i]*np.dot(X[i], self.w)) < 1:
